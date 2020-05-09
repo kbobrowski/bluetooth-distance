@@ -1,0 +1,3 @@
+[submodule "btlemon"]
+	path = btlemon
+	url = git@github.com:kbobrowski/btlemon.git
