@@ -15,7 +15,7 @@ extern "C" {
 
 #define MAX_HISTORY_LENGTH 1000
 #define MA_FACTOR 30
-#define MODE_LENGTH 300
+#define MODE_LENGTH 200
 #define PAUSE_LENGTH 50
 
 std::unordered_map<std::string, int> addr_rssi;
@@ -71,12 +71,17 @@ int main(int argc, char **argv) {
       {"", PAUSE_LENGTH},
       {" back pocket, back facing receiver", MODE_LENGTH},
       {"", PAUSE_LENGTH},
-      {"     in hand, back facing receiver", MODE_LENGTH}
+      {"     in hand, back facing receiver", MODE_LENGTH},
+      {"", PAUSE_LENGTH}
   };
 
   int current_mode = 0;
   int current_frame = 0;
   int next_mode_at = modes[0].second;
+  int total_video_length = 0;
+  for (auto& mode: modes) {
+    total_video_length += mode.second;
+  }
 
   btlemon_set_callback(callback);
   std::thread thread(btlemon_run);
@@ -183,6 +188,9 @@ int main(int argc, char **argv) {
     }
 
     current_frame++;
+    if (writerp && current_frame > total_video_length) {
+      break;
+    }
   }
   std::cout << "Terminating btlemon..." << std::flush;
   btlemon_stop();
