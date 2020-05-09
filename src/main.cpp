@@ -45,6 +45,13 @@ int main(int argc, char **argv) {
     std::cerr << "ERROR: pass target device address as first argument, e.g. 78:AA:A7:94:0A:31\n";
     return -1;
   }
+
+  cv::Ptr<cv::VideoWriter> writerp;
+
+  if (argc == 3) {
+    writerp = new cv::VideoWriter(argv[2], CV_FOURCC('M','J','P','G'), 18, {1280, 720});
+  }
+
   double tx = -61.02;
   double n = 21.87;
   double current_rssi = 0;
@@ -166,6 +173,11 @@ int main(int argc, char **argv) {
     cv::putText(video_frame, top_ss.str(), {15,100}, cv::FONT_HERSHEY_SIMPLEX, 0.6, {255,255,255});
     cv::putText(video_frame, bottom_s, {15, 625}, cv::FONT_HERSHEY_SIMPLEX, 0.6, {255,255,255});
     cv::imshow("btlemon", video_frame);
+
+    if (writerp) {
+      writerp->write(video_frame);
+    }
+
     if (cv::waitKey(10) == 27) {
       break;
     }
