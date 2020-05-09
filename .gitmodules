@@ -1,3 +1,6 @@
 [submodule "btlemon"]
 	path = btlemon
 	url = git@github.com:kbobrowski/btlemon.git
+[submodule "cv-plot"]
+	path = cv-plot
+	url = git@github.com:Profactor/cv-plot.git
