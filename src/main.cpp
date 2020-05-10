@@ -8,6 +8,7 @@
 #include <mutex>
 #include <cmath>
 #include <CvPlot/cvplot.h>
+#include <algorithm>
 
 extern "C" {
 #include "btlemon.h"
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
   cv::Ptr<cv::VideoWriter> writerp;
 
   if (argc == 3) {
-    writerp = new cv::VideoWriter(argv[2], CV_FOURCC('M','J','P','G'), 18, {1280, 720});
+    writerp = new cv::VideoWriter(argv[2], CV_FOURCC('M','J','P','G'), 30, {1280, 720});
   }
 
   double tx = -61.02;
@@ -71,7 +72,7 @@ int main(int argc, char **argv) {
       {"", PAUSE_LENGTH},
       {" back pocket, back facing receiver", MODE_LENGTH},
       {"", PAUSE_LENGTH},
-      {"     in hand, back facing receiver", MODE_LENGTH},
+      {"     in hand, top facing receiver", MODE_LENGTH},
       {"", PAUSE_LENGTH}
   };
 
@@ -123,13 +124,15 @@ int main(int argc, char **argv) {
           history.erase(history.begin());
         }
         if (it.first == target_device_addr) {
-          if (history.size() > 10 && ema_history.empty()) {
+          if (history.size() > 9 && ema_history.empty()) {
             double avg = 0;
             for (int entry : history)
               avg += entry;
             avg /= history.size();
-            ema_history.push_back(avg);
-            dist_history.push_back(rssi_distance(avg, tx, n));
+            ema_history.resize(10);
+            dist_history.resize(10);
+            std::fill(ema_history.begin(), ema_history.end(), avg);
+            std::fill(dist_history.begin(), dist_history.end(), rssi_distance(avg, tx, n));
           }
           double avg_distance = MA_FACTOR;
           if (!ema_history.empty()) {
@@ -157,7 +160,7 @@ int main(int argc, char **argv) {
 
       auto axes2 = CvPlot::makePlotAxes();
       axes2.create<CvPlot::Series>(dist_history, "-b");
-      axes2.setYLim({0, 10});
+      axes2.setYLim({0, 15});
       axes2.setXLim({0, MAX_HISTORY_LENGTH});
       axes2.title("distance [m]");
       cv::Mat plot_frame2 = axes2.render(360, 640);

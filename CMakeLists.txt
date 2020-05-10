@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(btlemon_camera)
+project(btlemon-distance)
 
 add_subdirectory(btlemon)
 
@@ -12,5 +12,5 @@ set(CMAKE_CXX_STANDARD 14)
 find_package(OpenCV REQUIRED)
 find_package(Threads)
 
-add_executable(btlemon_camera src/main.cpp)
-target_link_libraries(btlemon_camera ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT} btlemon)
+add_executable(bluetooth-distance src/main.cpp)
+target_link_libraries(bluetooth-distance ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT} btlemon)
